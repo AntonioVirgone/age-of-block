@@ -1,0 +1,67 @@
+# =============== #
+# Unity generato  #
+# =============== #
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# File di progetto IDE
+.vs/
+.vscode/
+*.sln
+*.csproj
+*.unityproj
+*.suo
+*.userprefs
+
+# =============== #
+# Unity specifico #
+# =============== #
+/Library/
+/Temp/
+/Assets/AssetStoreTools*
+/Assets/Plugins.meta
+/ProjectSettings/ProjectVersion.txt
+/ProjectSettings/EditorBuildSettings.asset.meta
+
+# File di cache pacchetti
+**/[Pp]ackages/packages-lock.json
+
+# File autogenerati
+*.pidb.meta
+*.pdb.meta
+*.mdb
+*.opendb
+.idea/
+
+# File di debug
+*.log
+*.bak
+*.orig
+
+# ================== #
+# OS e Editor files  #
+# ================== #
+.DS_Store*
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+*.swp
+*~
+
+# ================= #
+# File specifici    #
+# ================= #
+# Includi i file fondamentali
+!ProjectSettings/InputManager.asset
+!ProjectSettings/TagManager.asset
+!ProjectSettings/Physics2DSettings.asset
+
+# Escludi il resto
+ProjectSettings/*
+!ProjectSettings/*.asset
