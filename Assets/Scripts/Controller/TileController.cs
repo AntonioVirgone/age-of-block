@@ -1,50 +1,125 @@
+using System;
+using System.Collections;
+using Manager;
 using UnityEngine;
 
-public class TileController : MonoBehaviour {
-	public int tileNumber;
-	private SpriteRenderer spriteRenderer;
-	private Color originalColor = new Color(1, 1, 1, 1);
-	private bool isClickable = true;
+namespace Controller {
+	[RequireComponent(typeof(SpriteRenderer))]
+	public class TileController : MonoBehaviour {
+		[Header("Tile Settings")] [SerializeField]
+		public int tileNumber;
 
-	void Start() {
-		spriteRenderer = GetComponent<SpriteRenderer>();
-	}
+		[SerializeField] private float colorChangeDuration = 2f;
 
-	void OnMouseDown() {
-		Debug.Log($"Casella cliccata: {tileNumber}. SelectionManager {SelectionManager.Instance.GetSelectedValue()}");
+		[Header("Tile Colors")] [SerializeField]
+		private Color stoneColor = new Color(183f / 255f, 183f / 255f, 183f / 255f);
 
-		if (!isClickable) return;
-		
-		if (SelectionManager.Instance.GetSelectedValue() is TileResourceEnum.STONE) {
-			StartCoroutine(ChangeColor(new Color(183f / 255f, 183f / 255f, 183f / 255f), 2f)); // Grigio chiaro iniziale
-		} else if (SelectionManager.Instance.GetSelectedValue() is TileResourceEnum.GOLD) {
-			StartCoroutine(ChangeColor(new Color(200f / 255f, 168f / 255f, 0f / 255f), 2f)); // Grigio chiaro iniziale
+		[SerializeField] private Color goldColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
+		[SerializeField] private Color defaultColor = Color.white;
+
+		private SpriteRenderer _spriteRenderer;
+		private bool _isClickable = true;
+		private Coroutine _colorChangeCoroutine;
+
+		private void Awake() {
+			_spriteRenderer = GetComponent<SpriteRenderer>();
+			_spriteRenderer.color = defaultColor;
 		}
-		
-		// Creiamo un esempio di dati
-		ResourceData dati = new ResourceData();
-		dati.resourceName = "Stone";
-		dati.resourceAmount = 100;
-		
-		ResourceManager.Instance.SaveData(dati);
 
-		Debug.Log(ResourceManager.Instance.LoadData().resourceName);
-	}
+		private void OnMouseDown() {
+			if (!_isClickable || !SelectionManager.Instance)
+				return;
 
-	private System.Collections.IEnumerator ChangeColor(Color newColor, float timer) {
-		// Cambia colore
-		spriteRenderer.color = newColor;
-		
-		// Disattiva il click sul Tile
-		isClickable = false;
+			HandleTileClick();
+		}
 
-		// Attendi X secondi
-		yield return new WaitForSeconds(timer);
-		
-		// Ripristina colore
-		spriteRenderer.color = originalColor;
+		private void HandleTileClick() {
+			var selectedResource = SelectionManager.Instance.GetSelectedValue();
+			Debug.Log($"Tile {tileNumber} clicked. Selected resource: {selectedResource}");
 
-		// Riattiva il click sul Tile
-		isClickable = true;
+			if (_colorChangeCoroutine != null) {
+				StopCoroutine(_colorChangeCoroutine);
+			}
+
+			switch (selectedResource) {
+				case TileResourceEnum.STONE:
+					_colorChangeCoroutine = StartCoroutine(ChangeColorCoroutine(
+						stoneColor,
+						() => UpdateResource(TileResourceEnum.STONE, 100)));
+					break;
+				case TileResourceEnum.GOLD:
+					_colorChangeCoroutine = StartCoroutine(ChangeColorCoroutine(
+						goldColor,
+						() => UpdateResource(TileResourceEnum.GOLD, 100)));
+					break;
+				default:
+					Debug.LogWarning($"Unhandled resource type: {selectedResource}");
+					break;
+			}
+		}
+
+		private IEnumerator ChangeColorCoroutine(Color targetColor, Action onComplete) {
+			// Disabilita interazione
+			_isClickable = false;
+
+			// Cambia colore
+			_spriteRenderer.color = targetColor;
+
+			// Attendi
+			yield return new WaitForSeconds(colorChangeDuration);
+
+			// Ripristina colore
+			_spriteRenderer.color = defaultColor;
+
+			// Riabilita interazione
+			_isClickable = true;
+
+			// Callback
+			onComplete?.Invoke();
+
+			_colorChangeCoroutine = null;
+		}
+
+		private void UpdateResource(TileResourceEnum resourceType, int amount) {
+			if (!JsonResourceManager.Instance || !TextResourceManager.Instance) {
+				Debug.LogError("Managers not initialized!");
+				return;
+			}
+
+			var resourceData = new ResourceData {
+				resourceType = resourceType,
+				resourceName = resourceType.ToString()
+			};
+
+			resourceData.resourceAmount += amount;
+
+			var resourceSaved = LocalResourceManager.Instance.SaveData(resourceData);
+
+			switch (resourceType) {
+				case TileResourceEnum.STONE:
+					TextResourceManager.Instance.UpdateStone(resourceSaved.resourceAmount);
+					break;
+				case TileResourceEnum.GOLD:
+					TextResourceManager.Instance.UpdateGold(resourceSaved.resourceAmount);
+					break;
+				case TileResourceEnum.WOOD:
+				case TileResourceEnum.GRAIN:
+				case TileResourceEnum.UNKNOWN:
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(resourceType), resourceType, null);
+			}
+		}
+
+		private void OnDisable() {
+			if (_colorChangeCoroutine != null) {
+				StopCoroutine(_colorChangeCoroutine);
+				_colorChangeCoroutine = null;
+			}
+
+			// Ripristina stato iniziale
+			_isClickable = true;
+			_spriteRenderer.color = defaultColor;
+		}
 	}
 }
