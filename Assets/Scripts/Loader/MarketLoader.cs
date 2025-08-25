@@ -22,4 +22,23 @@ public class MarketLoader : MonoBehaviour {
 			SceneManager.SetActiveScene(marketScene);
 		}
 	}
+
+	public void CloseMarket() {
+		// Scarica la scena "MarketScene" in modo asincrono
+		StartCoroutine(UnloadMarketAsync());
+	}
+
+	IEnumerator UnloadMarketAsync() {
+		AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync("MarketScene");
+
+		while (!asyncUnload.isDone) {
+			yield return null;
+		}
+
+		// Dopo aver chiuso la scena additiva, puoi opzionalmente impostare la scena principale come attiva
+		Scene mainScene = SceneManager.GetSceneByName("SampleScene");
+		if (mainScene.IsValid()) {
+			SceneManager.SetActiveScene(mainScene);
+		}
+	}
 }
