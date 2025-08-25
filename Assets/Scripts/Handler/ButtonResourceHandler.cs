@@ -9,7 +9,8 @@ namespace Handler {
 			var resourceType = clickedButton.tag switch {
 				"BtnStone" => TileResourceEnum.STONE,
 				"BtnGold" => TileResourceEnum.GOLD,
-				"BtnMarket" => TileResourceEnum.MARKET,
+				"BtnWood" => TileResourceEnum.WOOD,
+				"BtnGrain" => TileResourceEnum.GRAIN,
 				_ => TileResourceEnum.UNKNOWN
 			};
 

@@ -13,8 +13,9 @@ namespace Controller {
 
 		[Header("Tile Colors")] [SerializeField]
 		private Color stoneColor = new Color(183f / 255f, 183f / 255f, 183f / 255f);
-
 		[SerializeField] private Color goldColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
+		[SerializeField] private Color woodColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
+		[SerializeField] private Color grainColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
 		[SerializeField] private Color defaultColor = Color.white;
 
 		private SpriteRenderer _spriteRenderer;
@@ -50,8 +51,19 @@ namespace Controller {
 				case TileResourceEnum.GOLD:
 					_colorChangeCoroutine = StartCoroutine(ChangeColorCoroutine(
 						goldColor,
-						() => UpdateResource(TileResourceEnum.GOLD, 100)));
+						() => UpdateResource(TileResourceEnum.GOLD, 80)));
 					break;
+				case TileResourceEnum.WOOD:
+					_colorChangeCoroutine = StartCoroutine(ChangeColorCoroutine(
+						woodColor,
+						() => UpdateResource(TileResourceEnum.WOOD, 120)));
+					break;
+				case TileResourceEnum.GRAIN:
+					_colorChangeCoroutine = StartCoroutine(ChangeColorCoroutine(
+						grainColor,
+						() => UpdateResource(TileResourceEnum.GRAIN, 30)));
+					break;
+				case TileResourceEnum.UNKNOWN:
 				default:
 					Debug.LogWarning($"Unhandled resource type: {selectedResource}");
 					break;
@@ -94,21 +106,8 @@ namespace Controller {
 			resourceData.resourceAmount += amount;
 
 			var resourceSaved = LocalResourceManager.Instance.SaveData(resourceData);
-
-			switch (resourceType) {
-				case TileResourceEnum.STONE:
-					TextResourceManager.Instance.UpdateStone(resourceSaved.resourceAmount);
-					break;
-				case TileResourceEnum.GOLD:
-					TextResourceManager.Instance.UpdateGold(resourceSaved.resourceAmount);
-					break;
-				case TileResourceEnum.WOOD:
-				case TileResourceEnum.GRAIN:
-				case TileResourceEnum.UNKNOWN:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(resourceType), resourceType, null);
-			}
+			
+			TextResourceManager.Instance.UpdateResource(resourceSaved);
 		}
 
 		private void OnDisable() {

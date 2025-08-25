@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ public class TextResourceManager : MonoBehaviour {
 	// Riferimenti UI (serializzati per l'Inspector)
 	[Header("Resources")] [SerializeField] private TMP_Text _stoneText;
 	[SerializeField] private TMP_Text _goldText;
+	[SerializeField] private TMP_Text _woodText;
+	[SerializeField] private TMP_Text _grainText;
 
 	[Header("Revenues")] [SerializeField] private TMP_Text _revenueText;
 
@@ -71,16 +74,37 @@ public class TextResourceManager : MonoBehaviour {
 	}
 
 	// Metodi pubblici per aggiornare i testi
-	public void UpdateStone(int value) {
-		if (_stoneText)
-			_stoneText.text = $"Stone: {value}";
+	public void UpdateResource(ResourceData resourceData) {
+		switch (resourceData.resourceType) {
+			case TileResourceEnum.STONE: {
+				if (_stoneText is not null) {
+					_stoneText.text = $"{resourceData.resourceName}: {resourceData.resourceAmount}";
+				}
+				break;
+			}
+			case TileResourceEnum.GOLD:
+				if (_goldText is not null) {
+					_goldText.text = $"{resourceData.resourceName}: {resourceData.resourceAmount}";
+				}
+				break;
+			case TileResourceEnum.WOOD:
+				if (_woodText is not null) {
+					_woodText.text = $"{resourceData.resourceName}: {resourceData.resourceAmount}";
+				}
+				break;
+			case TileResourceEnum.GRAIN:
+				if (_grainText is not null) {
+					_grainText.text = $"{resourceData.resourceName}: {resourceData.resourceAmount}";
+				}
+				break;
+			case TileResourceEnum.UNKNOWN:
+				break;
+			default:
+				throw new ArgumentOutOfRangeException(nameof(resourceData), resourceData, null);
+		}
 	}
-
-	public void UpdateGold(int value) {
-		if (_goldText)
-			_goldText.text = $"Gold: {value}";
-	}
-
+	
+	
 	public void UpdateRevenue(int value) {
 		if (_revenueText != null)
 			_revenueText.text = $"Revenue: {value}";
