@@ -10,7 +10,7 @@ public class GridManager : MonoBehaviour {
 	private void Start() {
 		GenerateCenteredGrid();
 	}
-
+	
 	private void GenerateCenteredGrid() {
 		if (tilePrefab == null) {
 			Debug.LogError("Tile Prefab non assegnato!");

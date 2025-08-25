@@ -3,5 +3,6 @@ public enum TileResourceEnum {
 	GOLD,
 	WOOD,
 	GRAIN,
+	MARKET,
 	UNKNOWN
 }

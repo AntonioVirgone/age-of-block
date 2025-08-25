@@ -29,8 +29,8 @@ public class LocalResourceManager : MonoBehaviour {
 			Debug.LogWarning($"Item con ID {newResource.resourceType} non trovato!");
 			resourceDataList.Add(newResource);
 		}
-		
-		return itemToUpdate;
+
+		return itemToUpdate ?? newResource;
 	}
 
 	public ResourceData LoadData(TileResourceEnum key) {
