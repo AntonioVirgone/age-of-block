@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using Manager;
-using Mono.Cecil;
 using UnityEngine;
 
 public class LocalResourceManager : MonoBehaviour {
@@ -17,11 +14,11 @@ public class LocalResourceManager : MonoBehaviour {
 		}
 
 		Instance = this;
+		resourceDataList ??= new List<ResourceData>();
 		DontDestroyOnLoad(gameObject);
 	}
 
 	public ResourceData SaveData(ResourceData newResource) {
-		resourceDataList ??= new List<ResourceData>();
 		var itemToUpdate = resourceDataList.Find(item => item.resourceType == newResource.resourceType);
 		if (itemToUpdate != null) {
 			itemToUpdate.resourceAmount += newResource.resourceAmount; // Modifica diretta (gli oggetti sono reference)

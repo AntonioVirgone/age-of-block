@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;using Manager;
 using UnityEngine;
 
-public class JsonResourceManager : MonoBehaviour, IResourceManager {
+public class JsonResourceManager : MonoBehaviour {
 	public static JsonResourceManager Instance { get; set; }
 	private string filePath;
 

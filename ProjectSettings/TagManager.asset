@@ -6,6 +6,8 @@ TagManager:
   tags:
   - BtnStone
   - BtnGold
+  - BtnWood
+  - BtnGrain
   layers:
   - Default
   - TransparentFX
