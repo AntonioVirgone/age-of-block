@@ -3,19 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ResourceMarketRow : MonoBehaviour {
-	[Header("Component")] 
-	[SerializeField]
-	private TMP_Text resourceType;    // Es. "STONE", "GOLD", ecc.
-	[SerializeField]
-	private Slider slider;
-	[SerializeField]
-	private Button sellButton;
-	
-	[Header("Settings")]
-	[SerializeField]
-	private TileResourceEnum resourceName;
-	[SerializeField]
-	private float minValue = 0f;
+	[Header("Component")] [SerializeField] private TMP_Text resourceType; // Es. "STONE", "GOLD", ecc.
+	[SerializeField] private Slider slider;
+	[SerializeField] private Button sellButton;
+
+	[Header("Settings")] [SerializeField] private TileResourceEnum resourceName;
+	[SerializeField] private float minValue = 0f;
 	[SerializeField] private float maxValue = 100f;
 	[SerializeField] private float currentValue = 50f;
 
@@ -36,6 +29,8 @@ public class ResourceMarketRow : MonoBehaviour {
 
 		// Aggiungi listener per i cambiamenti
 		slider.onValueChanged.AddListener(OnSliderChanged);
+
+		sellButton.onClick.AddListener(OnSellClicked);
 	}
 
 	// Chiamato quando lo slider viene mosso
@@ -45,22 +40,28 @@ public class ResourceMarketRow : MonoBehaviour {
 		// Aggiorna il testo
 		if (resourceType != null)
 			resourceType.text = $"{resourceName.ToString()}: {currentValue:F1}";
-
-		// Esegui calcoli basati sul valore
-		PerformCalculations(currentValue);
-	}
-
-	// Esempio di calcoli basati sul valore
-	private void PerformCalculations(float value) {
-		float calculatedResult = value * 2.5f;
-		Debug.Log($"Valore: {value} | Calcolo: {calculatedResult}");
-
-		// Aggiungi qui la tua logica di calcolo
 	}
 
 	// Metodo per aggiornare lo slider da codice
-	public void SetSliderValue(float newValue) {
-		currentValue = Mathf.Clamp(newValue, minValue, maxValue);
-		slider.value = currentValue;
+	private void SetSliderValue(float newValue) {
+		slider.value = newValue;
+		slider.minValue = minValue;
+		slider.maxValue = maxValue - newValue;
+	}
+
+	private void OnSellClicked() {
+		var amountToSell = slider.value;
+		
+		SetSliderValue(amountToSell);
+		var resourceData = new ResourceData {
+			resourceAmount = Mathf.RoundToInt(maxValue - amountToSell),
+			resourceName = resourceName.ToString(),
+			resourceType = resourceName
+		};
+
+		LocalResourceManager.Instance.SaveData(resourceData);
+		
+		TextResourceManager.Instance.UpdateResource(resourceData);
+		TextResourceManager.Instance.UpdateRevenue(amountToSell);
 	}
 }

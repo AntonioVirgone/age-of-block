@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Manager;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Controller {
 	[RequireComponent(typeof(SpriteRenderer))]
@@ -13,6 +14,7 @@ namespace Controller {
 
 		[Header("Tile Colors")] [SerializeField]
 		private Color stoneColor = new Color(183f / 255f, 183f / 255f, 183f / 255f);
+
 		[SerializeField] private Color goldColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
 		[SerializeField] private Color woodColor = new Color(161f / 255f, 96f / 255f, 10f / 255f);
 		[SerializeField] private Color grainColor = new Color(244f / 255f, 255f / 255f, 32f / 255f);
@@ -34,7 +36,15 @@ namespace Controller {
 			HandleTileClick();
 		}
 
+		private static bool IsMainScene() {
+			return SceneManager.GetActiveScene().buildIndex == 0;
+		}
+		
 		private void HandleTileClick() {
+			if (!IsMainScene()) {
+				return;
+			}
+
 			var selectedResource = SelectionManager.Instance.GetSelectedValue();
 			Debug.Log($"Tile {tileNumber} clicked. Selected resource: {selectedResource}");
 
@@ -106,7 +116,7 @@ namespace Controller {
 			resourceData.resourceAmount += amount;
 
 			var resourceSaved = LocalResourceManager.Instance.SaveData(resourceData);
-			
+
 			TextResourceManager.Instance.UpdateResource(resourceSaved);
 		}
 

@@ -8,11 +8,6 @@ public class TextResourceManager : MonoBehaviour {
 	private static readonly object _lock = new object();
 	private static bool _isApplicationQuitting = false;
 
-	// Aggiungi questo metodo
-	public static bool IsReady => _instance != null &&
-	                              _instance._stoneText != null &&
-	                              _instance._goldText != null;
-
 	// Riferimenti UI (serializzati per l'Inspector)
 	[Header("Resources")] [SerializeField] private TMP_Text _stoneText;
 	[SerializeField] private TMP_Text _goldText;
@@ -104,9 +99,11 @@ public class TextResourceManager : MonoBehaviour {
 		}
 	}
 	
-	
-	public void UpdateRevenue(int value) {
+	public void UpdateRevenue(float value) {
+		var revenueSplit = _revenueText.text.Split(':');
+		var revenue = float.Parse(revenueSplit[1]);
+		
 		if (_revenueText != null)
-			_revenueText.text = $"Revenue: {value}";
+			_revenueText.text = $"Revenue: {revenue + value:F1}";
 	}
 }
