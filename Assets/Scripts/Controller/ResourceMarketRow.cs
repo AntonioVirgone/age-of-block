@@ -10,13 +10,12 @@ public class ResourceMarketRow : MonoBehaviour {
 	[Header("Settings")] [SerializeField] private TileResourceEnum resourceName;
 	[SerializeField] private float minValue = 0f;
 	[SerializeField] private float maxValue = 100f;
-	[SerializeField] private float currentValue = 50f;
+	[SerializeField] private float currentValue = 0f;
 
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	void Start() {
+	private void Start() {
 		var resourceData = LocalResourceManager.Instance.LoadData(resourceName);
 		maxValue = resourceData?.resourceAmount ?? 0;
-		currentValue = resourceData?.resourceAmount ?? 0;
 
 		// Inizializza lo slider
 		slider.minValue = minValue;
@@ -49,6 +48,7 @@ public class ResourceMarketRow : MonoBehaviour {
 		slider.maxValue = maxValue - newValue;
 	}
 
+	// Chiamato quando si preme il button
 	private void OnSellClicked() {
 		var amountToSell = slider.value;
 		
