@@ -12,9 +12,8 @@ namespace Controller {
 
 		[SerializeField] private float colorChangeDuration = 2f;
 
-		[Header("Tile Colors")] [SerializeField]
-		private Color stoneColor = new Color(183f / 255f, 183f / 255f, 183f / 255f);
-
+		[Header("Tile Colors")] 
+		[SerializeField] private Color stoneColor = new Color(183f / 255f, 183f / 255f, 183f / 255f);
 		[SerializeField] private Color goldColor = new Color(200f / 255f, 168f / 255f, 0f / 255f);
 		[SerializeField] private Color woodColor = new Color(161f / 255f, 96f / 255f, 10f / 255f);
 		[SerializeField] private Color grainColor = new Color(244f / 255f, 255f / 255f, 32f / 255f);
@@ -108,14 +107,7 @@ namespace Controller {
 				return;
 			}
 
-			var resourceData = new ResourceData {
-				resourceType = resourceType,
-				resourceName = resourceType.ToString()
-			};
-
-			resourceData.resourceAmount += amount;
-
-			var resourceSaved = LocalResourceManager.Instance.SaveData(resourceData);
+			var resourceSaved = LocalResourceManager.Instance.UpdateAmount(resourceType, amount);
 
 			TextResourceManager.Instance.UpdateResource(resourceSaved);
 		}
