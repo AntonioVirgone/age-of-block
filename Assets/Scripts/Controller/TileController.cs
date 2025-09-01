@@ -107,14 +107,7 @@ namespace Controller {
 				return;
 			}
 
-			var resourceData = new ResourceData {
-				resourceType = resourceType,
-				resourceName = resourceType.ToString()
-			};
-
-			resourceData.resourceAmount += amount;
-
-			var resourceSaved = LocalResourceManager.Instance.SaveData(resourceData);
+			var resourceSaved = LocalResourceManager.Instance.UpdateAmount(resourceType, amount);
 
 			TextResourceManager.Instance.UpdateResource(resourceSaved);
 		}

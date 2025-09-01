@@ -104,6 +104,6 @@ public class TextResourceManager : MonoBehaviour {
 		var revenue = float.Parse(revenueSplit[1]);
 		
 		if (_revenueText != null)
-			_revenueText.text = $"Revenue: {revenue + value:F1}";
+			_revenueText.text = $"Coins: {revenue + value:F1}";
 	}
 }

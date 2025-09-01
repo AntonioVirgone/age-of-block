@@ -16,7 +16,8 @@ public class ResourceMarketRow : MonoBehaviour {
 	private void Start() {
 		var resourceData = LocalResourceManager.Instance.LoadData(resourceName);
 		maxValue = resourceData?.resourceAmount ?? 0;
-
+		currentValue = maxValue / 2;
+		
 		// Inizializza lo slider
 		slider.minValue = minValue;
 		slider.maxValue = maxValue;
@@ -24,7 +25,7 @@ public class ResourceMarketRow : MonoBehaviour {
 
 		// Aggiorna il testo (se presente)
 		if (resourceType != null)
-			resourceType.text = $"{resourceName.ToString()}: {currentValue:F1}";
+			resourceType.text = $"{resourceName.ToString()}: {currentValue:F1}/{maxValue:F1}";
 
 		// Aggiungi listener per i cambiamenti
 		slider.onValueChanged.AddListener(OnSliderChanged);
@@ -38,23 +39,24 @@ public class ResourceMarketRow : MonoBehaviour {
 
 		// Aggiorna il testo
 		if (resourceType != null)
-			resourceType.text = $"{resourceName.ToString()}: {currentValue:F1}";
+			resourceType.text = $"{resourceName.ToString()}: {currentValue:F1}/{maxValue:F1}";
 	}
 
 	// Metodo per aggiornare lo slider da codice
 	private void SetSliderValue(float newValue) {
-		slider.value = newValue;
+		slider.value = maxValue / 2;
 		slider.minValue = minValue;
-		slider.maxValue = maxValue - newValue;
+		slider.maxValue = maxValue;
 	}
 
 	// Chiamato quando si preme il button
 	private void OnSellClicked() {
 		var amountToSell = slider.value;
+		maxValue -= amountToSell;
 		
 		SetSliderValue(amountToSell);
 		var resourceData = new ResourceData {
-			resourceAmount = Mathf.RoundToInt(maxValue - amountToSell),
+			resourceAmount = maxValue,
 			resourceName = resourceName.ToString(),
 			resourceType = resourceName
 		};
